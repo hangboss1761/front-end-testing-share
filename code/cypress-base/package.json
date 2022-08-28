@@ -1,0 +1,21 @@
+{
+  "name": "cypress-base",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "precypress:run": "npm run lint",
+    "cypress:run": "cypress run",
+    "lint": "tsc --pretty --noEmit",
+    "test:ci": "cypress run"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mockjs": "^1.0.6",
+    "cypress": "^10.6.0",
+    "mockjs": "^1.1.0",
+    "typescript": "^4.8.2"
+  }
+}
