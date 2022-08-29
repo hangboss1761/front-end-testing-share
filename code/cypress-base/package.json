@@ -8,7 +8,8 @@
     "precypress:run": "npm run lint",
     "cypress:run": "cypress run",
     "lint": "tsc --pretty --noEmit",
-    "test:ci": "cypress run"
+    "test:ci": "cypress run",
+    "cypress:remote": "cypress run --record --key a884d3f7-e635-4bd1-9552-739720b3640f"
   },
   "author": "",
   "license": "ISC",

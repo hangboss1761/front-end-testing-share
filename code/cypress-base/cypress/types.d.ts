@@ -13,6 +13,7 @@
 declare namespace Cypress {
   // add custom Cypress command to the interface Chainable<Subject>
   interface Chainable<Subject = any> {
+    login(username: string, password: string): void;
     // let TS know we have a custom command cy.clickLink(...)
     clickLink(label: string | number | RegExp): void
     /**

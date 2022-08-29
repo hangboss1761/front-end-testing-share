@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
+    "target": "ES2019",
+    "module": "commonjs",
+    "lib": ["esnext", "dom"],
     "resolveJsonModule": true
   },
   "include": ["**/*.ts"],
