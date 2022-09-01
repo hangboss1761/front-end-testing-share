@@ -17,6 +17,7 @@ describe('typescript works', () => {
     cy.visit('cypress/fixtures/test.html');
     // Test Runner window object doesn't have add() function.
     // So, it should fail the type check.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     window.add = (a: number, b: number) => a + b;
 

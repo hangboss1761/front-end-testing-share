@@ -6,17 +6,33 @@
   "scripts": {
     "cypress:open": "cypress open",
     "precypress:run": "npm run lint",
-    "cypress:run": "cypress run",
-    "lint": "tsc --pretty --noEmit",
+    "cypress:run": "cypress run --reporter json",
+    "cypress:run-headed": "cypress run --headed",
     "test:ci": "cypress run",
-    "cypress:remote": "cypress run --record --key a884d3f7-e635-4bd1-9552-739720b3640f"
+    "cypress:remote": "cypress run --record --key a884d3f7-e635-4bd1-9552-739720b3640f",
+    "lint:ts": "tsc --pretty --noEmit",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --fix",
+    "lint:prettier": "prettier --write  .",
+    "lint": "yarn lint:ts & yarn lint:eslint & yarn lint:prettier"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
     "@types/mockjs": "^1.0.6",
+    "@types/node": "^18.7.13",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
     "cypress": "^10.6.0",
+    "cypress-file-upload": "^5.0.8",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-define-config": "^1.7.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "fs-extra": "^10.1.0",
     "mockjs": "^1.1.0",
+    "prettier": "^2.7.1",
     "typescript": "^4.8.2"
   }
 }

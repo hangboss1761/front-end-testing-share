@@ -1,9 +1,4 @@
-/**
- * @author hangboss1761
- * @date 2022/08/28
- * @Description:
- */
-
+import 'cypress-file-upload';
 import { generateRandomWords } from '../utils/index';
 
 Cypress.Commands.add('login', (username, password) => {
@@ -14,7 +9,7 @@ Cypress.Commands.add('login', (username, password) => {
     cy.get('input#form_item_password').clear().type(password);
     cy.get('.ant-form-item').last().click();
 
-    cy.url().should('contain', '/dashboard')
+    cy.url().should('contain', '/dashboard');
   });
 });
 

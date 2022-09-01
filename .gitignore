@@ -4,6 +4,17 @@ dist/
 *.swp
 .vscode
 .idea
-yarn.lock
 .tmp
 .env
+.eslintcache
+# playwright
+node_modules/
+test-results/
+playwright-report/
+playwright/.cache/
+**StorageState.json
+
+# cypress
+**/cypress/screenshots/
+**/cypress/videos/
+**/cypress/downloads/

@@ -302,4 +302,291 @@ test('authentication switch in test', async ({ browser }) => {
 
 ```
 
+### Hover事件支持
+**Cypress**
+
+不支持Hover事件
+```ts
+// code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
+import { userInfo } from '../../fixtures/assets/data/index';
+it.skip('hover work', () => {
+  cy.login(userInfo.root.name, userInfo.root.password);
+  cy.visit('https://vvbin.cn/next/#/comp/table/basic');
+  /**
+   * 不支持hover,https://docs.cypress.io/api/commands/hover
+   * 如果hover是通过JS的事件实现，类似mouseover，可以通过trigger('mouseover')来触发
+   * 如过不是，那么很有可能无法触发对应的行为，比如这里就无法触发tooltip
+   */
+  cy.get('.anticon-info-circle').trigger('mouseover');
+  cy.get('.ant-tooltip').should('be.visible');
+});
+
+```
+
+**Playwright**
+
+完美支持
+
+```ts
+// code/playwright-base/tests/modules/hover/hover.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: 'rootStorageState.json' });
+
+test('hover work', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/comp/table/basic');
+  await page.locator('.anticon-info-circle').hover();
+  await expect(page.locator('.ant-tooltip')).toBeVisible();
+});
+```
+
+### 拖拽
+**Cypress**
+
+满足基本的拖拽需求
+```ts
+// code/cypress-base/cypress/e2e/drag/drag.spec.cy.ts
+import { userInfo } from '../../fixtures/assets/data/index';
+it('drag work', () => {
+  cy.login(userInfo.root.name, userInfo.root.password);
+
+  cy.visit('https://vvbin.cn/next/#/dashboard/analysis');
+  cy.get('.vben-menu-item').contains('工作台').click();
+
+  cy.get('.ant-tabs-tab')
+    .first()
+    .trigger('mousedown')
+    .trigger('mousemove', { clientX: 200 })
+    .trigger('mouseup', { force: true });
+});
+
+```
+
+**Playwright**
+
+拖拽相关API比较丰富，如`dispatchEvent`、`locator.dragTo(target[, options])`、`page.dragAndDrop(source, target[, options])`
+
+```ts
+// code/playwright-base/tests/modules/drag/drag.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: 'rootStorageState.json' });
+
+test('drag work', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/comp/modal');
+  await page.locator('.ant-btn:has-text("打开弹窗1")').click();
+
+  const target = page.locator('.ant-modal .ant-modal-header');
+  await target.dispatchEvent('mousedown');
+  await target.dispatchEvent('mousemove', { clientX: 800 });
+  await target.dispatchEvent('mousedup');
+
+  await page.goto('https://vvbin.cn/next/#/flow/flowChart');
+  const conditionNode = page.locator('.lf-dnd-item').nth(4);
+  const canvasArea = page.locator('.lf-drag-able').first();
+  await conditionNode.dragTo(canvasArea);
+
+  await expect(page.locator('.lf-node-content:has-text("条件判断")')).toBeVisible();
+});
+```
+
+### 文件上传、下载
+**Cypress**
+
+官网上暂时没有读到上传相关的文档说明，不过可以通过`cypress-file-uploadl`这个库来实现上传，如果你要测试的上传功能实现时`<input type="file />`不存在或者在后期动态创建，那么可能你没有办法通过它来实现上传文件了
+```ts
+// code/cypress-base/cypress/e2e/downloadAndUpload/downAndUp.spec.cy.ts
+import { userInfo } from '../../fixtures/assets/data/index';
+import * as path from 'path';
+
+it('download work', () => {
+  cy.login(userInfo.root.name, userInfo.root.password);
+
+  // 下载的文件在下次运行时会清除，可以不用额外remove
+  const downloadsFolder = Cypress.config('downloadsFolder');
+  const downloadedFilename = path.join(downloadsFolder, 'testName.txt');
+
+  cy.visit('https://vvbin.cn/next/#/feat/download');
+  cy.get('.ant-btn').contains('文件流下载').click();
+
+  cy.readFile(downloadedFilename).should('contain', 'text content');
+});
+
+it('upload work', () => {
+  cy.login(userInfo.root.name, userInfo.root.password);
+  const filePath = 'assets/file-upload/upload_template.xlsx';
+
+  cy.visit('https://vvbin.cn/next/#/feat/excel/importExcel');
+  cy.get('[type="file"]').attachFile(filePath);
+
+  cy.get('.ant-table-title').should('contain.text', 'upload_template.xlsx');
+});
+
+```
+
+**Playwright**
+
+提供`setInputFiles`、`waitForEvent('filechooser')`，可以灵活的选择上传方式
+```ts
+// code/playwright-base/tests/modules/downloadAndUpload/downAndUp.spec.ts
+import { test, expect } from '@playwright/test';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { remove } from 'fs-extra';
+
+test.use({ storageState: 'rootStorageState.json' });
+
+test('download work', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/feat/download');
+
+  const [download] = await Promise.all([
+    // It is important to call waitForEvent before click to set up waiting.
+    page.waitForEvent('download'),
+    page.locator('.ant-btn:has-text("文件流下载")').click(),
+  ]);
+  const filePath = path.join(__dirname, '../../assets/file-download/text.txt');
+  await download.saveAs(filePath);
+
+  expect(await fs.readFile(filePath, { encoding: 'utf-8' })).toContain('text content');
+  await remove(filePath);
+});
+
+test('upload work', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/feat/excel/importExcel');
+
+  const [fileChooser] = await Promise.all([
+    // It is important to call waitForEvent before click to set up waiting.
+    page.waitForEvent('filechooser'),
+    page.locator('.ant-btn:has-text("导入Excel")').click(),
+  ]);
+
+  const filePath = path.join(__dirname, '../../assets/file-upload/upload_template.xlsx');
+
+  await fileChooser.setFiles(filePath);
+
+  await expect(page.locator('.ant-table-title:has-text("upload_template.xlsx")')).toBeVisible();
+});
+
+```
+
+### iframe支持
+**Cypress**
+
+支持，但是API易用性一般
+```ts
+// code/cypress-base/cypress/e2e/iframe/iframe.spec.cy.ts
+const getIframeBody = () => {
+  return (
+    cy
+      .get('iframe[data-cy="the-frame"]')
+      // Cypress yields jQuery element, which has the real
+      // DOM element under property "0".
+      // From the real DOM iframe element we can get
+      // the "document" element, it is stored in "contentDocument" property
+      // Cypress "its" command can access deep properties using dot notation
+      // https://on.cypress.io/its
+      .its('0.contentDocument.body')
+      .should('not.be.empty')
+      .then(cy.wrap)
+  );
+};
+
+it('iframe work', () => {
+  cy.visit('cypress/fixtures/iframe_demo.html');
+
+  const iframeBody = getIframeBody();
+  iframeBody.find('#sb_form_q').type('百度');
+});
+
+```
+
+**Playwright**
+
+iframe相关的API基本与普通页面一致，使用方便便捷
+
+```ts
+// code/playwright-base/tests/modules/iframe/iframe.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: 'rootStorageState.json' });
+
+test('iframe work', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/frame/doc');
+
+  const frame = page.frameLocator('.vben-iframe-page__main');
+
+  await frame.locator('a:has-text("快速开始")').click();
+  await expect(frame.locator('.sidebar-link-item:has-text("介绍")')).toBeVisible();
+});
+
+
+```
+
+### xx
+**Cypress**
+
+xx
+```ts
+// code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
+
+```
+
+**Playwright**
+
+xxx
+
+```ts
+```
+
+### xx
+**Cypress**
+
+xx
+```ts
+// code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
+
+```
+
+**Playwright**
+
+xxx
+
+```ts
+```
+
+### xx
+**Cypress**
+
+xx
+```ts
+// code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
+
+```
+
+**Playwright**
+
+xxx
+
+```ts
+```
+
 ## 测试报告
+
+## 其他问题
+
+### Cypress中`cy.visit()`方法的缺陷
+
+`cy.visit()`方法需要等待页面`load`事件触发才算完成，且不可配置。如果页面的资源比较多且部分资源加载比较慢，`load`事件迟迟不触发，只能延长`cy.visit()`的超时时间等待事件触发，可能会严重影响用例执行速度([相关issue](https://github.com/cypress-io/cypress/issues/440))；在playwright中类似的方法为`page.goto()`，可以灵活的配置监听`"load"|"domcontentloaded"|"networkidle"|"commit"`事件（[配置说明](https://playwright.dev/docs/api/class-page#page-goto)），则不会存在这样的问题
+
+### Cypress中`it.only()`的缺陷
+
+使用`cypress run`运行测试时，`it.only()`无法单独运行用例
+
+```
+/**
+  * Indicates this test should be executed exclusively.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+only: ExclusiveTestFunction;
+```

@@ -12,7 +12,7 @@ import { devices } from '@playwright/test';
  */
 const config: PlaywrightTestConfig = {
   /* To set something up once before running all tests */
-  globalSetup: 'tests/global-setup/index.ts',
+  // globalSetup: 'tests/global-setup/index.ts',
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,

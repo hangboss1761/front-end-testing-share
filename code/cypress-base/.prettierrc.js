@@ -10,4 +10,4 @@ module.exports = {
   proseWrap: 'preserve',
   endOfLine: 'lf',
   htmlWhitespaceSensitivity: 'strict',
-}
+};
