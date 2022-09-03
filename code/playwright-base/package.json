@@ -4,21 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pree2e-test": "yarn lint",
-    "e2e-test": "yarn playwright test --project=chromium --headed",
-    "lint:eslint": "eslint --cache --max-warnings 0  . --fix",
+    "preall-test": "yarn lint",
+    "all-test": "yarn ct-test && yarn e2e-test",
+    "tsc": "tsc -p .",
+    "ct-test": "playwright test -c playwright-ct.config.ts",
+    "ct-test:headed": "playwright test -c playwright-ct.config.ts --headed",
+    "e2e-test": "playwright test -c playwright.config.ts --project=chromium",
+    "e2e-test:headed": "playwright test --project=chromium --headed",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
     "lint:prettier": "prettier --write  .",
-    "lint": "yarn lint:eslint & yarn lint:prettier"
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/experimental-ct-vue2": "^1.25.1",
     "@playwright/test": "^1.25.1",
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^18.7.13",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
+    "@vue/runtime-dom": "^3.2.38",
+    "element-ui": "^2.15.9",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-define-config": "^1.7.0",
@@ -26,6 +34,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "fs-extra": "^10.1.0",
     "prettier": "^2.7.1",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.2",
+    "vue": "2.6.14",
+    "vue-template-compiler": "2.6.14"
   }
 }

@@ -3,12 +3,15 @@
     "target": "ES2019",
     "module": "commonjs",
     "lib": ["esnext", "dom"],
+    "types": ["element-plus/global"],
     "jsx": "preserve",
-    "noEmit": true,
     "strict": true,
+    "allowJs": false,
+    "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+
+  "include": ["**/*.ts", "**/*.tsx", "**/*.vue"],
   "exclude": ["node_modules"]
 }

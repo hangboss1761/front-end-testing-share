@@ -26,7 +26,7 @@ describe('authentication work', () => {
      * 2. 输入“组件”
      * Assert断言：断言存在搜索结果且第一个搜索结果中包含“组件”两个字
      */
-    cy.get('.vben-layout-header-action .anticon-search').click();
+    cy.get('.vben-layout-header-action .anticon-search').click().pause();
     cy.get('.vben-app-search-modal input[placeholder="搜索"]').type('组件');
 
     // 断言

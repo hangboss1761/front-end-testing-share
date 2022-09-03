@@ -309,6 +309,7 @@ test('authentication switch in test', async ({ browser }) => {
 ```ts
 // code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
 import { userInfo } from '../../fixtures/assets/data/index';
+// 此处无法实现期望的效果
 it.skip('hover work', () => {
   cy.login(userInfo.root.name, userInfo.root.password);
   cy.visit('https://vvbin.cn/next/#/comp/table/basic');
@@ -320,6 +321,7 @@ it.skip('hover work', () => {
   cy.get('.anticon-info-circle').trigger('mouseover');
   cy.get('.ant-tooltip').should('be.visible');
 });
+
 
 ```
 
@@ -520,6 +522,140 @@ test('iframe work', async ({ page }) => {
 });
 
 
+```
+
+### 多Tab支持
+**Cypress**
+
+受限于Cypress运行在浏览器中的设计，它不支持多个Tab同时运行，[这里](https://docs.cypress.io/guides/references/trade-offs#Multiple-tabs)有一些曲线救国的实现方式，但是也非常有局限性
+```ts
+// code/cypress-base/cypress/e2e/multi-tabs/multiTabs.spec.cy.ts
+import { userInfo } from '../../fixtures/assets/data/index';
+/**
+ * 无法实现对应的功能
+ */
+it.skip('multiple tabs works', () => {
+  cy.login(userInfo.root.name, userInfo.root.password);
+  cy.visit('https://vvbin.cn/next/#/dashboard/analysis');
+  // https://docs.cypress.io/guides/references/trade-offs#Multiple-tabs
+  cy.get('.vben-menu-submenu-title').contains('外部页面').click();
+
+  cy.get('.vben-menu-item').contains('项目文档(外链)').click();
+  // 对于新打开的tab页，没有操作能力
+});
+
+```
+
+**Playwright**
+
+完美支持，能够通过多种方式监听新窗口、新tab页面打开，并且对打开后的页面具有完整地操作能力
+
+```ts
+// code/playwright-base/tests/modules/multi-tabs/multiTabs.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.use({ storageState: 'rootStorageState.json' });
+
+test('multiple tabs works', async ({ page }) => {
+  await page.goto('https://vvbin.cn/next/#/dashboard/analysis');
+  await page.locator('.vben-menu-submenu-title:has-text("外部页面")').click();
+
+  const [popup] = await Promise.all([
+    // It is important to call waitForEvent before click to set up waiting.
+    page.waitForEvent('popup'),
+    // Opens popup.
+    page.locator('.vben-menu-item:has-text("项目文档(外链)")').click(),
+  ]);
+
+  await popup.waitForLoadState();
+  const title = await popup.title();
+  expect(title).toBe('Home | Vben Admin');
+});
+
+```
+
+### 网络请求
+**Cypress**
+
+支持拦截请求前后，发起请求
+```ts
+cy.intercept({
+  method: 'POST',
+  url: '/myApi',
+}).as('apiCheck')
+
+cy.visit('/')
+cy.wait('@apiCheck').then((interception) => {
+  assert.isNotNull(interception.response.body, '1st API call has data')
+})
+
+cy.wait('@apiCheck').then((interception) => {
+  assert.isNotNull(interception.response.body, '2nd API call has data')
+})
+
+cy.wait('@apiCheck').then((interception) => {
+  assert.isNotNull(interception.response.body, '3rd API call has data')
+})
+```
+
+**Playwright**
+
+支持拦截并修改请求、代理请求、发起请求，可以比较准确的控制监听哪一个操作后触发的请求
+
+```ts
+
+const [request] = await Promise.all([
+  // Waits for the next response with the specified url
+  page.waitForResponse('https://example.com/resource'),
+  // Triggers the response
+  page.click('button.triggers-response'),
+]);
+
+const [response] = await Promise.all([
+  page.waitForResponse('**/api/fetch_data'),
+  page.locator('button#update').click(),
+]);
+
+```
+
+### 断言
+**Cypress**
+
+内部捆绑了`Chai`这个断言库，主要的风格如下（[官方文档](https://docs.cypress.io/guides/references/assertions)）
+```ts
+cy.get('li.selected').should('have.length', 3)
+cy.get('form').find('input').should('not.have.class', 'disabled')
+cy.get('li.hidden').should('not.be.visible')
+cy.get('[data-testid="loading"]').should('not.exist')
+```
+
+**Playwright**
+
+使用了jest的`expect`，并且自己也提供了一些特有的断言方法。并且提供了`re-testing`的特性（[官方文档](https://playwright.dev/docs/test-assertions)）。
+
+```ts
+expect(success).toBeTruthy();
+
+await expect(page.locator('.status')).toHaveText('Submitted');
+```
+Playwright会re-testing Node直到它内部存在文本”Submitted“，在这个过程中它会一遍又一遍的去抓取Node并做检查，存在一个超时时间，默认5s且可配
+
+### 调试
+**Cypress**
+- 通过video与页面快照进行调试
+- 在`cypress open` mode中调试，可以断点、单步运行、在控制台查看日志
+- 如何排查ci里面的错误？
+xx
+```ts
+// code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
+
+```
+
+**Playwright**
+
+xxx
+
+```ts
 ```
 
 ### xx

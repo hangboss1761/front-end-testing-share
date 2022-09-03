@@ -43,6 +43,8 @@ Cypress.Commands.overwrite<'type', 'element'>('type', (originalFn, element, text
 Cypress.Commands.add(
   'typeRandomWords',
   { prevSubject: ['element'] },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   (subject /* :JQuery<HTMLElement> */, count = 3, options?) => {
     return cy.wrap(subject).type(generateRandomWords(count), options);
   },

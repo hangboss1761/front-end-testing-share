@@ -10,10 +10,10 @@
     "cypress:run-headed": "cypress run --headed",
     "test:ci": "cypress run",
     "cypress:remote": "cypress run --record --key a884d3f7-e635-4bd1-9552-739720b3640f",
-    "lint:ts": "tsc --pretty --noEmit",
-    "lint:eslint": "eslint --cache --max-warnings 0  . --fix",
+    "tsc": "tsc -p .",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
     "lint:prettier": "prettier --write  .",
-    "lint": "yarn lint:ts & yarn lint:eslint & yarn lint:prettier"
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
   },
   "author": "",
   "license": "ISC",

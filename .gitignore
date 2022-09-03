@@ -9,8 +9,8 @@ dist/
 .eslintcache
 # playwright
 node_modules/
-test-results/
-playwright-report/
+test-results**/
+playwright-report**/
 playwright/.cache/
 **StorageState.json
 

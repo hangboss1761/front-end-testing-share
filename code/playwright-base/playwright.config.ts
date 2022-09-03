@@ -12,8 +12,9 @@ import { devices } from '@playwright/test';
  */
 const config: PlaywrightTestConfig = {
   /* To set something up once before running all tests */
-  // globalSetup: 'tests/global-setup/index.ts',
+  globalSetup: 'tests/global-setup/index.ts',
   testDir: './tests',
+  testMatch: '**/e2e/**/**.spec.ts',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -30,11 +31,10 @@ const config: PlaywrightTestConfig = {
   /* Retry on CI only */
   // retries: process.env.CI ? 2 : 0,
   retries: 1,
-
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     headless: true,
@@ -57,27 +57,27 @@ const config: PlaywrightTestConfig = {
       },
     },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //   },
+    // },
 
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-      },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //   },
+    // },
 
-    {
-      name: 'debug',
-      use: {
-        ...devices['Desktop Chrome'],
-        headless: false,
-      },
-    },
+    // {
+    //   name: 'debug',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     headless: false,
+    //   },
+    // },
 
     /* Test against mobile viewports. */
     // {

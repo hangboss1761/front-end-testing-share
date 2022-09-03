@@ -1,0 +1,36 @@
+{
+  "name": "playwright-ct-vue3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/experimental-ct-vue": "^1.25.1",
+    "@types/node": "^18.7.14",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "element-plus": "^2.2.16",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-define-config": "^1.7.0",
+    "eslint-plugin-playwright": "^0.11.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.4.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.2",
+    "vue": "3.x",
+    "vue-eslint-parser": "^9.0.3",
+    "vue-tsc": "^0.40.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5050",
+    "pretest-ct": "yarn lint",
+    "test-ct": "playwright test -c playwright-ct.config.ts",
+    "test-ct:headed": "playwright test -c playwright-ct.config.ts --headed",
+    "tsc": "vue-tsc --noEmit",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
+    "lint:prettier": "prettier --write  .",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
+  }
+}

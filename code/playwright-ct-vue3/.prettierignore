@@ -6,7 +6,7 @@ package-lock.json
 yarn.lock
 
 # playwright
-playwright/.cache
 test-results**
 playwright-report**
+playwright/.cache
 **StorageState.json

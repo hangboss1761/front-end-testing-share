@@ -1,4 +1,5 @@
 import { userInfo } from '../../fixtures/assets/data/index';
+// 此处无法实现期望的效果
 it.skip('hover work', () => {
   cy.login(userInfo.root.name, userInfo.root.password);
   cy.visit('https://vvbin.cn/next/#/comp/table/basic');

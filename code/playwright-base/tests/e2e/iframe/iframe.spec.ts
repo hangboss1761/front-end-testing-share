@@ -9,4 +9,5 @@ test('iframe work', async ({ page }) => {
 
   await frame.locator('a:has-text("快速开始")').click();
   await expect(frame.locator('.sidebar-link-item:has-text("介绍")')).toBeVisible();
+  expect(1).toBe(1);
 });
