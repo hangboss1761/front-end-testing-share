@@ -1,8 +1,20 @@
 {
   "name": "playwright-base",
   "version": "1.0.0",
-  "description": "",
+  "description": "playwright e2e ant component testing examples",
   "main": "index.js",
+  "keywords": [
+    "playwright",
+    "playwright testing",
+    "playwright e2e testing",
+    "playwright component testing",
+    "component testing"
+  ],
+  "author": "hangboss1761",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "preall-test": "yarn lint",
     "all-test": "yarn ct-test && yarn e2e-test",
@@ -15,9 +27,6 @@
     "lint:prettier": "prettier --write  .",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@playwright/experimental-ct-vue2": "^1.25.1",
     "@playwright/test": "^1.25.1",

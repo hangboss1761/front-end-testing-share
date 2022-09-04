@@ -1,8 +1,27 @@
 {
   "name": "playwright-ct-vue3",
+  "description": "vue3 component testing use playwright",
+  "keywords": [
+    "playwright",
+    "playwright component testing",
+    "vue component testing"
+  ],
+  "author": "hangboss1761",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "pretest-ct": "yarn lint",
+    "ct-test": "playwright test -c playwright-ct.config.ts",
+    "ct-test:headed": "playwright test -c playwright-ct.config.ts --headed",
+    "tsc": "vue-tsc --noEmit",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
+    "lint:prettier": "prettier --write  .",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
+  },
   "devDependencies": {
     "@playwright/experimental-ct-vue": "^1.25.1",
     "@types/node": "^18.7.14",
@@ -20,17 +39,5 @@
     "vue": "3.x",
     "vue-eslint-parser": "^9.0.3",
     "vue-tsc": "^0.40.5"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 5050",
-    "pretest-ct": "yarn lint",
-    "test-ct": "playwright test -c playwright-ct.config.ts",
-    "test-ct:headed": "playwright test -c playwright-ct.config.ts --headed",
-    "tsc": "vue-tsc --noEmit",
-    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
-    "lint:prettier": "prettier --write  .",
-    "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
   }
 }
