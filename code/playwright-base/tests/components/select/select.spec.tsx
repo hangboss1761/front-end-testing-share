@@ -61,8 +61,8 @@ test('mount work', async ({ page, mount }) => {
   await openPopover();
 
   // Visual comparisons
-  await expect(ct).toHaveScreenshot();
-  await expect(page.locator('.el-select-dropdown:visible')).toHaveScreenshot();
+  // allow 5% pixe ratio diff
+  await expect(page).toHaveScreenshot({ maxDiffPixelRatio: 0.05 });
 });
 
 test('custom dropdown class', async ({ page, mount }) => {

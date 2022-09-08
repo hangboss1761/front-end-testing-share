@@ -211,7 +211,7 @@ it('event work', () => {
   cy.get('.pw-clear').should('have.text', 'true');
 });
 
-it.only('slot work', () => {
+it('slot work', () => {
   cy.mount(ElButton, {
     slots: {
       default: () => <span>click me</span>,
@@ -221,7 +221,7 @@ it.only('slot work', () => {
   cy.get('button').should('have.text', 'click me');
 });
 
-it.only('slot work jsx', () => {
+it('slot work jsx', () => {
   cy.mount(() => <ElButton>click me</ElButton>);
 
   cy.get('button').should('have.text', 'click me');
