@@ -226,3 +226,9 @@ test('event work', async ({ page, mount }) => {
   await expect(ct.locator('.pw-visible-change')).toHaveText('true');
   await expect(ct.locator('.pw-clear')).toHaveText('true');
 });
+
+test('slots work', async ({ mount }) => {
+  const ct = await mount(<el-button>click me</el-button>);
+
+  await expect(ct).toContainText('click me');
+});

@@ -6,7 +6,7 @@ import { devices } from '@playwright/experimental-ct-vue2';
  */
 const config: PlaywrightTestConfig = {
   testDir: './tests',
-  testMatch: ['**/components/**/**.spec.ts', '**/components/**/**.spec.tsx'],
+  testMatch: ['**/components/**/*.spec.{ts,tsx}'],
   /* The base directory, relative to the config file, for snapshot files created with toMatchSnapshot and toHaveScreenshot. */
   // snapshotDir: './__snapshots__',
   /* Maximum time one test can run for. */

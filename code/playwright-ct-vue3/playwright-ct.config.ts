@@ -2,7 +2,7 @@ import { type PlaywrightTestConfig, devices } from '@playwright/experimental-ct-
 
 const config: PlaywrightTestConfig = {
   testDir: './tests',
-  testMatch: ['**/components/**/**.spec.ts', '**/components/**/**.spec.tsx'],
+  testMatch: ['**/components/**/*.spec.{ts,tsx}'],
   forbidOnly: !!process.env.CI,
   retries: 0,
   reporter: [['html', { open: 'never' }]],

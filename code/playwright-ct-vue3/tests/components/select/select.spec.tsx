@@ -3,6 +3,7 @@ import { Page, Locator } from '@playwright/test';
 import SelectBase from './BaseSelect.vue';
 import RemoteFilterSelect from './RemoteFilterSelect.vue';
 import EventSelect from './EventSelect.vue';
+import { ElButton } from 'element-plus';
 
 const baseOptions = [
   {
@@ -60,10 +61,8 @@ test('mount work', async ({ page, mount }) => {
 
   await openPopover();
 
-  // await page.pause();
   // Visual comparisons
-  await expect(ct).toHaveScreenshot();
-  await expect(page.locator('.el-select-dropdown:visible')).toHaveScreenshot();
+  await expect(page).toHaveScreenshot();
 });
 
 test('custom dropdown class', async ({ page, mount }) => {
@@ -134,7 +133,7 @@ test('disabled option work', async ({ page, mount }) => {
   await expect(ct.locator('.el-input input')).toHaveValue(options[0].label);
 });
 
-test('keyboard operations', async ({ page, mount }) => {
+test('keyboard operations work', async ({ page, mount }) => {
   const ct = await mount(SelectBase, {
     props: {
       options: baseOptions,
@@ -145,10 +144,6 @@ test('keyboard operations', async ({ page, mount }) => {
 
   await openPopover();
 
-  // 立马进行press操作会导致popover无法正常显示出来，这里等它成功展示后在做后续操作
-  // eslint-disable-next-line playwright/no-wait-for-timeout
-  await page.waitForTimeout(300);
-
   await ct.locator('.el-input').press('ArrowDown');
   await ct.locator('.el-input').press('ArrowDown');
   await ct.locator('.el-input').press('Enter');
@@ -156,7 +151,7 @@ test('keyboard operations', async ({ page, mount }) => {
   await expect(ct.locator('.el-input input')).toHaveValue(baseOptions[1].label);
 });
 
-test('clearable', async ({ mount }) => {
+test('clearable work', async ({ mount }) => {
   const ct = await mount(SelectBase, {
     props: {
       propsParams: {
@@ -173,7 +168,7 @@ test('clearable', async ({ mount }) => {
   await expect(ct.locator('.el-input input')).toBeEmpty();
 });
 
-test('filterable', async ({ page, mount }) => {
+test('filterable work', async ({ page, mount }) => {
   const ct = await mount(SelectBase, {
     props: {
       propsParams: {
@@ -226,4 +221,10 @@ test('event work', async ({ page, mount }) => {
   await expect(ct.locator('.pw-change')).toHaveText('true');
   await expect(ct.locator('.pw-visible-change')).toHaveText('true');
   await expect(ct.locator('.pw-clear')).toHaveText('true');
+});
+
+test('slots work', async ({ mount }) => {
+  const ct = await mount(<ElButton>click me</ElButton>);
+
+  await expect(ct).toContainText('click me');
 });

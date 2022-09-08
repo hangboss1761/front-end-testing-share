@@ -305,23 +305,23 @@ test('authentication switch in test', async ({ browser }) => {
 ### Hover事件支持
 **Cypress**
 
-不支持Hover事件
+事件触发是模拟的，意味着`cy.click` `cy.type`等都是通过js实现的，并且不支持Hover事件
+
+通过社区提供的[cypress-real-events](https://github.com/dmtrKovalenko/cypress-real-events)可以才能实现出真实事件操作
 ```ts
 // code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
 import { userInfo } from '../../fixtures/assets/data/index';
-// 此处无法实现期望的效果
-it.skip('hover work', () => {
+it('hover work', () => {
   cy.login(userInfo.root.name, userInfo.root.password);
   cy.visit('https://vvbin.cn/next/#/comp/table/basic');
   /**
    * 不支持hover,https://docs.cypress.io/api/commands/hover
    * 如果hover是通过JS的事件实现，类似mouseover，可以通过trigger('mouseover')来触发
-   * 如过不是，那么很有可能无法触发对应的行为，比如这里就无法触发tooltip
+   * 如过不是，可以借助社区提供的https://github.com/dmtrKovalenko/cypress-real-events这个库实现real hover
    */
-  cy.get('.anticon-info-circle').trigger('mouseover');
+  cy.get('.anticon-search svg').realHover();
   cy.get('.ant-tooltip').should('be.visible');
 });
-
 
 ```
 
@@ -337,7 +337,7 @@ test.use({ storageState: 'rootStorageState.json' });
 
 test('hover work', async ({ page }) => {
   await page.goto('https://vvbin.cn/next/#/comp/table/basic');
-  await page.locator('.anticon-info-circle').hover();
+  await page.locator('.anticon-search svg').hover();
   await expect(page.locator('.ant-tooltip')).toBeVisible();
 });
 ```
@@ -707,6 +707,17 @@ xxx
 ```
 
 ## 测试报告
+
+## 组件测试
+
+### playwright组件测试
+#### 组件测试的初始化
+在`playwright/index.ts`中可以进行一些初始化操作，比如全局注册组件、引入配置样式等
+```ts
+// vue2/3 setup demo
+```
+
+#### 组件测试
 
 ## 其他问题
 

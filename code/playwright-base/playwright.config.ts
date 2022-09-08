@@ -14,7 +14,7 @@ const config: PlaywrightTestConfig = {
   /* To set something up once before running all tests */
   globalSetup: 'tests/global-setup/index.ts',
   testDir: './tests',
-  testMatch: '**/e2e/**/**.spec.ts',
+  testMatch: '**/e2e/**/*.spec.{ts,tsx}',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {

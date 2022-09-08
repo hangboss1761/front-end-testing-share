@@ -2,12 +2,14 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es5", "dom"],
-    "types": ["cypress", "cypress-file-upload", "node"],
+    "types": ["cypress", "cypress-file-upload", "cypress-real-events", "element-plus/global", "node"],
     "noEmit": true,
     "strict": true,
+    "jsx": "preserve",
     "skipLibCheck": true,
+    "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.vue"],
   "exclude": ["node_modules"]
 }

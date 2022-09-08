@@ -1,4 +1,6 @@
 import 'cypress-file-upload';
+import 'cypress-real-events/support';
+import '@frsource/cypress-plugin-visual-regression-diff/dist/support';
 import { generateRandomWords } from '../utils/index';
 
 Cypress.Commands.add('login', (username, password) => {
