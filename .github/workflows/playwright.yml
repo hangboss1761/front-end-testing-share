@@ -9,7 +9,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./code/playright-base
+        working-directory: code/playright-base
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
