@@ -27,6 +27,15 @@ npx playwright show-report playwright-report-ct
 # 静态检查&自动fix
 yarn lint
 ```
+## 持续集成（使用GitHub action）
+
+新建一个名字为`gh-pages`的分支
+
+配置
+
+新建文件与目录
+
+github action配置
 
 ## 相关仓库
 
