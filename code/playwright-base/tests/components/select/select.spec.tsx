@@ -49,7 +49,7 @@ const useSelect = (ct: Locator, page: Page) => {
   };
 };
 
-test.skip('mount work', async ({ page, mount }) => {
+test('mount work', async ({ page, mount }) => {
   const ct = await mount(SelectBase, {
     props: {
       // custom props
