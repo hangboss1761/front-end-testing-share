@@ -17,7 +17,7 @@
   },
   "scripts": {
     "preall-test": "yarn lint",
-    "all-test": "yarn ct-test && yarn e2e-test",
+    "all-test": "npm-run-all -l -p ct-test e2e-test",
     "tsc": "tsc -p .",
     "ct-test": "playwright test -c playwright-ct.config.ts",
     "ct-test:headed": "playwright test -c playwright-ct.config.ts --headed",
@@ -42,6 +42,7 @@
     "eslint-plugin-playwright": "^0.11.1",
     "eslint-plugin-prettier": "^4.2.1",
     "fs-extra": "^10.1.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "^4.8.2",
     "vue": "2.6.14",
