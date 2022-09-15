@@ -6,9 +6,11 @@ on:
     branches: [main, master]
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: code/playright-base
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    working-directory: code/playright-base
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
