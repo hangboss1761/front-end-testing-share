@@ -5,13 +5,16 @@ on:
   pull_request:
     branches: [main, master]
 jobs:
-  playwright-test:
+  playwright-ct-test:
     defaults:
       run:
         shell: bash
         working-directory: code/playwright-base
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment:
+      name: playwright-ct
+      url: https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct
     container:
       image: mcr.microsoft.com/playwright:v1.25.0-focal
     steps:
