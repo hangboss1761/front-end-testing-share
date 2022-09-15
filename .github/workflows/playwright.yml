@@ -8,7 +8,7 @@ jobs:
   test:
     defaults:
       run:
-        working-directory: code/playright-base
+        working-directory: ./code/playright-base
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
