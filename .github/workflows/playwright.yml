@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --pure-lockfile
       - name: Run your tests
-        run: yarn ct-test
+        run: npx playwright test -c playwright-ct.config.ts -u
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: playwright-report
-          path: code/playwright-base/playwright-report-ct/
+          path: code/playwright-base/tests/components/select/select.spec.tsx-snapshots/mount-work-1-chromium-linux.png
           retention-days: 30
