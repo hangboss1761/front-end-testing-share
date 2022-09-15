@@ -15,10 +15,12 @@ jobs:
           node-version: '14.x'
       - name: cd target dir
         run: cd code/playwright-base
+      - name: test ci
+        run: ll
       - name: Install dependencies
         run: yarn install --pure-lockfile
       - name: Run your tests
-        run: npm run all-test
+        run: yarn all-test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
