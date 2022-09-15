@@ -23,7 +23,7 @@
     "ct-test:headed": "playwright test -c playwright-ct.config.ts --headed",
     "e2e-test": "playwright test -c playwright.config.ts --project=chromium",
     "e2e-test:headed": "playwright test --project=chromium --headed",
-    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts,.vue --fix",
+    "lint:eslint": "eslint --cache --max-warnings 0  . --ext .tsx,.ts --fix",
     "lint:prettier": "prettier --write  .",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn tsc"
   },
