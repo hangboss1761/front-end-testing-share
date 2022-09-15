@@ -1,11 +1,11 @@
-name: Playwright Tests
+name: Tests
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
 jobs:
-  test:
+  playwright-test:
     defaults:
       run:
         shell: bash
@@ -29,3 +29,9 @@ jobs:
           name: playwright-report
           path: code/playwright-base/playwright-report-ct/
           retention-days: 30
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: code/playwright-base/playwright-report-ct/
+          destination_dir: playwright-report-ct/
