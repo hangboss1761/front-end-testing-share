@@ -1,5 +1,68 @@
 # Cypress VS Playwright
 ## 原理介绍
+
+## 语法对比
+
+playwright更接近于现代JavaScript & TypeScript的语法风格，可以任意选择面向对象或者函数式的编码风格。
+
+Cypress更接近于Jquery的语法风格，大量的链式调用以及全局命令注入
+
+## 并发执行支持
+
+playwright在并发执行方面的支持度非常好，可以再相同与不同文件之间的用例并发执行，甚至还可以并发执行在多种浏览器中。使用起来也非常方便
+
+cypress无法同时在多个浏览器中运行用例，单个文件内的用例也无法做到并发执行
+
+## 开源
+playwright完全开源，对于各种解决官方基本都帮忙搞定了，比如可视报告、视觉对比等
+
+cypress是一个开源免费的自动化工具，但是它的仪表盘功能免费版最多只支持3个用户使用，功能也有所局限
+
+![收费](./img/cypress%E6%94%B6%E8%B4%B9.png)
+
+## 插件
+playwright暂时没有提供对应的插件支持，但是你需要的东西可能在官方都得到了较好的支持，不再需要额外的插件支持。
+
+Cypress在社区中有大量的插件，免费、收费的都有，一些Cypress自身支持有限的功能，很多我们都能通过引入插件支持，比如文件上传下载、hover、多tab、视觉对比，但是要尽量减少这些依赖，因为你所依赖的插件很有可能是缺少维护的状态，很有可能在Cypress升级后插件就没法正常工作了。(官方文档中推荐的视觉对比插件[cypress-plugin-snapshots](https://github.com/meinaart/cypress-plugin-snapshots/issues/215)在升级到Cypress10.x版本后就出现了报错无法使用的问题，且没有人维护)
+
+## 执行速度
+
+来自[cheekly](https://blog.checklyhq.com/cypress-vs-selenium-vs-playwright-vs-puppeteer-speed-comparison/)对比结论，该结论排除并发执行、视频、快照等影响因素，纯粹的去对比相同的用例在不同框架之间的执行速度
+
+![performance](img/performance.png)
+
+- playwright具有最快的执行速度
+- Cypress的启动时间更长，整体时间受这个因素影响较大
+- Cypress更推荐[在本地环境中运行你要测试的程序](https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Step-1-Start-your-server)，虽然您当然可以测试已经部署的应用程序，但这并不是 Cypress 的真正优势。
+- playwright在测试生产环境的应用时，有明显的速度优势。
+
+**并发执行提高速度**
+
+playwright可以在单个文件、多个文件、同一个机器、不同机器、不同浏览器都可以做到并发执行，官方提供简单的配置让你灵活的选择你想要的并发模式
+
+单个机器上的并发执行
+```ts
+// playwright.config.ts
+import type { PlaywrightTestConfig } from '@playwright/test';
+
+const config: PlaywrightTestConfig = {
+  // Limit the number of workers on CI, use default locally
+  workers: process.env.CI ? 2 : undefined,
+};
+export default config;
+```
+
+多个机器上的并发执行
+```bash
+# 机器1
+npx playwright test --shard=1/3
+# 机器2
+npx playwright test --shard=2/3
+# 机器3
+npx playwright test --shard=3/3
+```
+
+Cypres官方并不推荐你在一台机器上去并发执行用例，这，表示这可能会耗费过多的资源需要你的机器有比较可靠的性能([原文在这](https://docs.cypress.io/guides/guides/parallelization#Overview))
 ## 基础功能对比
 ### TypeScript支持
 **Cypress**
@@ -341,6 +404,8 @@ test('hover work', async ({ page }) => {
   await expect(page.locator('.ant-tooltip')).toBeVisible();
 });
 ```
+
+### wait
 
 ### 拖拽
 **Cypress**
@@ -737,3 +802,41 @@ xxx
   */
 only: ExclusiveTestFunction;
 ```
+
+## 总结
+
+很多Cypress对比Playwright的视频或者文章中最后的总结环节都提到了，Cypress有非常好的社区成熟度与插件体系，是一个非常成熟的工具，同时如果您愿意付费那么他们提供的付费工具与服务可以非常好的为企业解决他们无法解决的问题或者及时的提供帮助，那么Cypress是你最好的选择；Playwright是一个非常优秀的测试框架它有着光明的未来，但是它还比较新，社区支持还比较少，如果你有一定的自动化测试的经验，可以去选择Playwright去拥抱未来。
+
+---
+以下是个人观点，仅供参考
+
+截止到目前的时间2022-09-14，playwright最新发布的版本为1.26.0。
+
+在2022.5.13发布的1.22.0版本中，playwright提供了Component Testing的支持，截止到该版本，playwright对比cypress在功能上基本就没有大的差距了,整体的功能与易用性的优势体现明显。
+
+从官方的的[Releases](https://github.com/microsoft/playwright/releases?page=1)记录中可以看到，playwright团队保持着每个月一个次版本发布,2-4次左右的补丁版本发布，issue基本上在48h内会进行回复，近半年来除了Component Testing没有其他比较重要的功能发布，更多的是易用性改进与bug修复。项目已经处于相对稳定，且维护积极的状态。
+
+在我们内部项目的实践中，受益于playwright自身的优越性，在技术方面我们基本没有出现过多的难以解决的障碍，官方提供的VS Code插件以及可视报告中的视频回放与[Trace Viewer](https://playwright.dev/docs/trace-viewer-intro)让我们在调试并分析本地与CI中失败用例的成本都降到最低，让我们有更多的时间去解决端到端自动化中的其他问题与障碍。
+
+从对比与实践来看，当前阶段选择Playwright作为团队的测试框架已经不在属于冒险的尝试，而是非常正确的选择，将会为团队的端到端测试的顺利开展做出非常重要的铺垫作用。
+
+1.20.0 3-15
+1.20.1 3-24
+1.20.2 4-2
+1.21.0 4-12
+1.21.1 4-19
+1.22.0 5-13
+1.22.1 5-17
+1.22.2 5.21
+1.23.0 6.28
+1.23.1 7-1
+1.23.2 7-8
+1.23.3 7-13
+1.23.4 7-16
+1.24.0 7-22
+1.24.1 7-22
+1.24.2 7-30
+1.25.0 8-11
+1.25.1 8-23
+1.25.2 9-7
+

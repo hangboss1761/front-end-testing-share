@@ -18,3 +18,4 @@ playwright/.cache/
 **/cypress/screenshots/
 **/cypress/videos/
 **/cypress/downloads/
+**/runner-results/
