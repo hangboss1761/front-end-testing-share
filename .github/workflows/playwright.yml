@@ -31,6 +31,7 @@ jobs:
           retention-days: 30
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
+        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: code/playwright-base/playwright-report-ct/
