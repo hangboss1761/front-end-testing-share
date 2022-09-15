@@ -16,7 +16,7 @@ jobs:
       - name: cd target dir
         run: cd code/playwright-base
       - name: test ci
-        run: ll
+        run: ls
       - name: Install dependencies
         run: yarn install --pure-lockfile
       - name: Run your tests
