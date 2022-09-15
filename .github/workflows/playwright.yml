@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --pure-lockfile
       - name: Run your tests
-        run: yarn all-test
+        run: yarn ct-test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: playwright-report
-          path: code/playwright-base/playwright-report/
+          path: code/playwright-base/playwright-report-ct/
           retention-days: 30
