@@ -8,11 +8,10 @@ dist/
 .env
 .eslintcache
 # playwright
-node_modules/
-test-results**/
-playwright-report**/
-playwright/.cache/
-**StorageState.json
+**/playwright**/test-results**/
+**/playwright**/playwright-report**/
+**/playwright**/playwright/.cache/
+**/playwright**/**StorageState.json
 
 # cypress
 **/cypress/screenshots/
