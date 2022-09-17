@@ -62,6 +62,7 @@ jobs:
         uses: cypress-io/github-action@v4 # use the explicit version number
         with:
           component: true
+          working-directory: code/cypress-base
       - uses: actions/upload-artifact@v2
         if: always()
         with:
