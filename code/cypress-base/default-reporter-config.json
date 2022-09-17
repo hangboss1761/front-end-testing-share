@@ -5,6 +5,6 @@
   },
   "cypressMochawesomeReporterReporterOptions": {
     "charts": true,
-    "reportPageTitle": "custom-title"
+    "reportPageTitle": "Cypress Test Report"
   }
 }
