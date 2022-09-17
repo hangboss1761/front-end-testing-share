@@ -148,6 +148,13 @@ jobs:
           record: true
           group: 'Cypress - parallel'
           working-directory: code/cypress-base
+        env:
+          # CYPRESS_RECORD_KEY需要在https://dashboard.cypress.io/创建，并写入到仓库-Settings-Secrets-Actions中
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          # GITHUB_TOKEN为github action自动生成
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: always()
