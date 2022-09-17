@@ -1,6 +1,11 @@
 **/*.md
 coverage/
 dist/
+screenshots/
+videos/
+reports/
+downloads/
+runner-results/
 
 package-lock.json
 yarn.lock

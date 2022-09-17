@@ -1,3 +1,4 @@
+import 'cypress-mochawesome-reporter/register';
 import 'cypress-file-upload';
 import 'cypress-real-events/support';
 import '@frsource/cypress-plugin-visual-regression-diff/dist/support';

@@ -16,5 +16,6 @@ dist/
 # cypress
 **/cypress/screenshots/
 **/cypress/videos/
+**/cypress/reports/
 **/cypress/downloads/
 **/runner-results/
