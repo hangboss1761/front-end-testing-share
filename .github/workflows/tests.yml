@@ -30,12 +30,12 @@ jobs:
       - name: Run your tests
         run: yarn ct-test
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: code/playwright-base/playwright-report-ct/
-          destination_dir: static-pages/playwright-report-ct/
+          force: false
+          folder: code/playwright-base/playwright-report-ct/
+          target-folder: static-pages/playwright-report-ct/
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -70,12 +70,12 @@ jobs:
       - name: Run your tests
         run: npx playwright test -c playwright-ct.config.ts --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: code/playwright-base/playwright-report-ct/
-          destination_dir: static-pages/playwright-report-ct-${{ matrix.shardIndex }}/
+          force: false
+          folder: code/playwright-base/playwright-report-ct/
+          target-folder: static-pages/playwright-report-ct-${{ matrix.shardIndex }}/
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -104,12 +104,12 @@ jobs:
           component: true
           working-directory: code/cypress-base
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: code/cypress-base/cypress/reports/html/
-          destination_dir: static-pages/cypress-report-ct/
+          force: false
+          folder: code/cypress-base/cypress/reports/html/
+          target-folder: static-pages/cypress-report-ct/
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -132,8 +132,8 @@ jobs:
         # run copies of the current job in parallel
         containers: [1, 2]
     environment:
-      name: cypress-ct-parallel
-      url: https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct-parallel
+      name: cypress-ct-parallel-${{ matrix.containers }}
+      url: https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct-parallel-${{ matrix.containers }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -156,16 +156,16 @@ jobs:
           # GITHUB_TOKEN为github action自动生成
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: code/cypress-base/cypress/reports/html/
-          destination_dir: static-pages/cypress-report-ct-parallel/
+          force: ${{ secrets.GITHUB_TOKEN }}
+          folder: code/cypress-base/cypress/reports/html/
+          target-folder: static-pages/cypress-report-ct-parallel-${{ matrix.containers }}/
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: cypress-report-parallel
+          name: cypress-report-parallel-${{ matrix.containers }}
           path: |
             code/cypress-base/cypress/reports/
             code/cypress-base/cypress/videos/
