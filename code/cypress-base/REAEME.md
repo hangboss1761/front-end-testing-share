@@ -37,3 +37,5 @@ yarn add cypress-multi-reporters cypress-parallel -D
 }
 ```
 > 单个机器上运行`yarn cypress:parallel`的时候无法生成HTML报告
+
+## 使用GitHub Actions持续集成
