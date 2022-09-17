@@ -42,3 +42,31 @@ jobs:
           name: playwright-report
           path: code/playwright-base/playwright-report-ct/
           retention-days: 30
+  cypress-ct-test:
+    defaults:
+      run:
+        shell: bash
+        working-directory: code/cypress-base
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+    environment:
+      name: cypress-ct
+      url: https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v4 # use the explicit version number
+        with:
+          component: true
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-report
+          path: |
+            code/cypress-base/cypress/reports/
+            code/cypress-base/cypress/videos/
+          retention-days: 30
