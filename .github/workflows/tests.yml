@@ -63,6 +63,13 @@ jobs:
         with:
           component: true
           working-directory: code/cypress-base
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: code/cypress-base/cypress/reports/html/
+          destination_dir: static-pages/cypress-report-ct/
       - uses: actions/upload-artifact@v2
         if: always()
         with:
