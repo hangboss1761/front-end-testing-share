@@ -166,7 +166,7 @@ jobs:
           record: true
           group: 'Cypress - parallel'
           working-directory: code/cypress-base
-          spec: cypress/components/parallel/**/*.cy.tsx
+          spec: '**/parallel/**/*.cy.tsx'
         env:
           # CYPRESS_RECORD_KEY需要在https://dashboard.cypress.io/创建，并写入到仓库-Settings-Secrets-Actions中
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
