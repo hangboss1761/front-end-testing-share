@@ -137,10 +137,10 @@ jobs:
             code/cypress-base/cypress/videos/
           retention-days: 30
   cypress-ct-test-parallel:
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: code/cypress-base
+    defaults:
+      run:
+        shell: bash
+        working-directory: code/cypress-base
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
