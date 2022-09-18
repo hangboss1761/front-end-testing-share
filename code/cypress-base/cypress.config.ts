@@ -38,7 +38,7 @@ module.exports = defineConfig({
     },
   },
   component: {
-    specPattern: 'cypress/components/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: 'cypress/components/select/**/*.cy.{js,jsx,ts,tsx}',
     devServer: {
       framework: 'vue',
       bundler: 'vite',

@@ -1,3 +1,9 @@
+/**
+ * @author hangboss1761
+ * @date 2022/09/18
+ * @Description: 单机器上的并行配置,主要是单机器中的并发执行无法通过cypress-mochawesome-reporter顺利生成HTML报告
+ */
+
 import { defineConfig } from 'cypress';
 import { initPlugin } from '@frsource/cypress-plugin-visual-regression-diff/dist/plugins';
 
@@ -20,7 +26,7 @@ module.exports = defineConfig({
     },
   },
   component: {
-    specPattern: 'cypress/components/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: 'cypress/components/parallel/**/*.cy.{js,jsx,ts,tsx}',
     devServer: {
       framework: 'vue',
       bundler: 'vite',

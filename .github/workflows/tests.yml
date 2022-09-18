@@ -17,10 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: playwright-ct
+      # 访问该地址可以查看对应的html报告
       url: https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct
     container:
       image: mcr.microsoft.com/playwright:v1.25.0-focal
     steps:
+      # 拉取代码
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
@@ -33,6 +35,7 @@ jobs:
       - name: Install rsync 📚
         run: |
           apt-get update && apt-get install -y rsync
+      # HTML报告部署到github page
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         if: always()
@@ -40,6 +43,7 @@ jobs:
           force: false
           folder: code/playwright-base/playwright-report-ct/
           target-folder: static-pages/playwright-report-ct/
+      # 上传制品，保存30天
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -59,6 +63,8 @@ jobs:
       url: https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct-${{ matrix.shardIndex }}
     container:
       image: mcr.microsoft.com/playwright:v1.25.0-focal
+    # 通过matrix strategies去定义变量，这将会生成多个相似的job（）
+    # 并把matrix中的变量进行组合后,这里将会生成两个组合，对应两个job:（[shardIndex: 1, shardTotal: 2]、[shardIndex: 2,shardTotal: 2]）
     strategy:
       fail-fast: false
       matrix:
@@ -160,6 +166,7 @@ jobs:
           record: true
           group: 'Cypress - parallel'
           working-directory: code/cypress-base
+          spec: cypress/components/parallel/**/*.cy.tsx
         env:
           # CYPRESS_RECORD_KEY需要在https://dashboard.cypress.io/创建，并写入到仓库-Settings-Secrets-Actions中
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

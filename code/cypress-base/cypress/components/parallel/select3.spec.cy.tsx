@@ -1,6 +1,6 @@
-import SelectBase from './BaseSelect.vue';
-import RemoteFilterSelect from './RemoteFilterSelect.vue';
-import EventSelect from './EventSelect.vue';
+import SelectBase from '../select/BaseSelect.vue';
+import RemoteFilterSelect from '../select/RemoteFilterSelect.vue';
+import EventSelect from '../select/EventSelect.vue';
 import { ElButton } from 'element-plus';
 
 const baseOptions = [
