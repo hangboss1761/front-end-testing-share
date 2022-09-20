@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/experimental-ct-vue';
 import { Page, Locator } from '@playwright/test';
 import SelectBase from './BaseSelect.vue';
 import RemoteFilterSelect from './RemoteFilterSelect.vue';
-import EventSelect from './EventSelect.vue';
 import { ElButton } from 'element-plus';
 
 const baseOptions = [
@@ -205,8 +204,18 @@ test('filterable with custom filter-method', async ({ page, mount }) => {
 });
 
 test('event work', async ({ page, mount }) => {
-  const ct = await mount(EventSelect, {
+  const messages: string[] = [];
+
+  const ct = await mount(SelectBase, {
     props: {
+      propsParams: {
+        clearable: true,
+      },
+      eventsParams: {
+        change: () => messages.push('change-trigger'),
+        clear: () => messages.push('clear-trigger'),
+        'visible-change': () => messages.push('visible-change-trigger'),
+      },
       options: baseOptions,
     },
   });
@@ -218,13 +227,23 @@ test('event work', async ({ page, mount }) => {
   await ct.locator('.el-input').hover();
   await ct.locator('.el-select__icon:visible').click();
 
-  await expect(ct.locator('.pw-change')).toHaveText('true');
-  await expect(ct.locator('.pw-visible-change')).toHaveText('true');
-  await expect(ct.locator('.pw-clear')).toHaveText('true');
+  expect(messages).toContain('change-trigger');
+  expect(messages).toContain('clear-trigger');
+  expect(messages).toContain('visible-change-trigger');
+});
+
+test('jsx slots work', async ({ mount }) => {
+  const ct = await mount(<ElButton>click me</ElButton>);
+
+  await expect(ct).toContainText('click me');
 });
 
 test('slots work', async ({ mount }) => {
-  const ct = await mount(<ElButton>click me</ElButton>);
+  const ct = await mount(ElButton, {
+    slots: {
+      default: 'click me',
+    },
+  });
 
   await expect(ct).toContainText('click me');
 });

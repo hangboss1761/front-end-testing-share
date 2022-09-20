@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/experimental-ct-vue2';
 import { Page, Locator } from '@playwright/test';
 import SelectBase from './Select.vue';
 import RemoteFilterSelect from './RemoteFilterSelect.vue';
-import EventSelect from './EventSelect.vue';
 
 const baseOptions = [
   {
@@ -144,10 +143,6 @@ test('keyboard operations', async ({ page, mount }) => {
 
   await openPopover();
 
-  // 立马进行press操作会导致popover无法正常显示出来，这里等它成功展示后在做后续操作
-  // eslint-disable-next-line playwright/no-wait-for-timeout
-  await page.waitForTimeout(300);
-
   await ct.locator('.el-input').press('ArrowDown');
   await ct.locator('.el-input').press('ArrowDown');
   await ct.locator('.el-input').press('Enter');
@@ -209,8 +204,18 @@ test('filterable with custom filter-method', async ({ page, mount }) => {
 });
 
 test('event work', async ({ page, mount }) => {
-  const ct = await mount(EventSelect, {
+  const messages: string[] = [];
+
+  const ct = await mount(SelectBase, {
     props: {
+      propsParams: {
+        clearable: true,
+      },
+      eventsParams: {
+        change: () => messages.push('change-trigger'),
+        clear: () => messages.push('clear-trigger'),
+        'visible-change': () => messages.push('visible-change-trigger'),
+      },
       options: baseOptions,
     },
   });
@@ -222,13 +227,7 @@ test('event work', async ({ page, mount }) => {
   await ct.locator('.el-input').hover();
   await ct.locator('.el-icon-circle-close').click();
 
-  await expect(ct.locator('.pw-change')).toHaveText('true');
-  await expect(ct.locator('.pw-visible-change')).toHaveText('true');
-  await expect(ct.locator('.pw-clear')).toHaveText('true');
-});
-
-test('slots work', async ({ mount }) => {
-  const ct = await mount(<el-button>click me</el-button>);
-
-  await expect(ct).toContainText('click me');
+  expect(messages).toContain('change-trigger');
+  expect(messages).toContain('clear-trigger');
+  expect(messages).toContain('visible-change-trigger');
 });

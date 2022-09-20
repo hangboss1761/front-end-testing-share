@@ -1,6 +1,5 @@
 import SelectBase from './BaseSelect.vue';
 import RemoteFilterSelect from './RemoteFilterSelect.vue';
-import EventSelect from './EventSelect.vue';
 import { ElButton } from 'element-plus';
 
 const baseOptions = [
@@ -194,8 +193,18 @@ it('filterable with custom filter-method', () => {
 });
 
 it('event work', () => {
-  cy.mount(EventSelect, {
+  const messages: string[] = [];
+
+  cy.mount(SelectBase, {
     props: {
+      propsParams: {
+        clearable: true,
+      },
+      eventsParams: {
+        change: () => messages.push('change-trigger'),
+        clear: () => messages.push('clear-trigger'),
+        'visible-change': () => messages.push('visible-change-trigger'),
+      },
       options: baseOptions,
     },
   });
@@ -206,9 +215,10 @@ it('event work', () => {
   cy.get('.el-input').click();
   cy.get('.el-select__icon:visible').click();
 
-  cy.get('.pw-change').should('have.text', 'true');
-  cy.get('.pw-visible-change').should('have.text', 'true');
-  cy.get('.pw-clear').should('have.text', 'true');
+  cy.wrap(messages)
+    .should('include', 'clear-trigger')
+    .should('include', 'change-trigger')
+    .should('include', 'visible-change-trigger');
 });
 
 it('slot work', () => {
@@ -221,7 +231,7 @@ it('slot work', () => {
   cy.get('button').should('have.text', 'click me');
 });
 
-it('slot work jsx', () => {
+it('jsx slot work', () => {
   cy.mount(() => <ElButton>click me</ElButton>);
 
   cy.get('button').should('have.text', 'click me');

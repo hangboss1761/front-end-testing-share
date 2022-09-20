@@ -1,5 +1,5 @@
 <template>
-  <el-select v-bind="propsParams" v-model="value" placeholder="请选择">
+  <el-select v-bind="propsParams" v-model="value" placeholder="请选择" v-on="eventsParams">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -16,6 +16,11 @@ export default {
   props: {
     // component props
     propsParams: {
+      type: Object,
+      default: () => ({}),
+    },
+    // component events
+    eventsParams: {
       type: Object,
       default: () => ({}),
     },

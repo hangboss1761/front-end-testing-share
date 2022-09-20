@@ -68,9 +68,235 @@ Playwright是2020年微软推出的一个专门用来做Web应用的测试与自
 
 ## BrowserContext
 
-存在于browser与page之间，每个browser可以创建出多个完全独立的context，context的创建速度快且资源消耗少，每个context可以创建多个page
+存在于browser与page之间，每个browser可以创建出多个完全独立的context，context的创建速度快且资源消耗少，每个context可以创建多个page。
 
-通过这个设计，我们可以去操作多个session独立的浏览器上下文，同时在每次运行测试时也可以做到只启动一次浏览器，每一个test case都使用一个独立context去进行测试
+通过这个设计，我们可以去操作多个session独立的浏览器上下文，同时在每次运行测试时也可以做到只启动一次浏览器，每一个test case都使用一个独立context去进行测试。
+
+## 开始
+
+参考官方文档中的[How to get started](https://playwright.dev/docs/test-components#how-to-get-started)
+
+在下面两个仓库也提供了通过Playwright搭建的组件测试框架，下面所有演示的完整代码都可以在里面找到
+
+- [Vue2 Playwright Components Testing](https://github.com/hangboss1761/front-end-testing-share/tree/master/code/playwright-base)
+- [Vue3 Playwright Components Testing](https://github.com/hangboss1761/front-end-testing-share/tree/master/code/playwright-ct-vue3)
+
+## 组件引入
+
+```ts
+// playwright/index.ts 在Vue2中引入组件
+// Import styles, initialize component theme here.
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+Vue.use(ElementUI);
+
+// playwright/index.ts 在Vue3中引入组件
+// Import styles, initialize component theme here.
+import { beforeMount } from '@playwright/experimental-ct-vue/hooks';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+
+beforeMount(async ({ app }) => {
+  app.use(ElementPlus);
+});
+```
+
+除了全局引入，也可以选择在测试文件中按需引入对应的被测试组件。
+
+## 模型封装
+
+类似于端到端测试中的页面对象模型，我们对组件测试过程中的通用行为、逻辑进行封装，来达到简化逻辑与代码服用的目的。
+
+```ts
+const useSelect = (ct: Locator, page: Page) => {
+  const pickSelectOption = async ({ text, nth }: { text?: string; nth?: number }) => {
+    if (text) {
+      await page.locator(`.el-select-dropdown:visible .el-select-dropdown__item :text-is("${text}")`).click();
+    } else {
+      await page.locator(`.el-select-dropdown:visible .el-select-dropdown__item >> nth=${nth}`).click();
+    }
+  };
+
+  const openPopover = async () => {
+    await ct.locator('.el-input').click();
+    // 等待popover动画执行完毕
+    // eslint-disable-next-line playwright/no-wait-for-timeout
+    await page.waitForTimeout(400);
+  };
+
+  return {
+    pickSelectOption,
+    openPopover,
+  };
+};
+```
+
+## 组件渲染测试
+
+我们推荐使用视觉对比去测试组件渲染是否符合预期。
+
+```html
+<!-- Select.vue -->
+<template>
+  <el-select v-bind="propsParams" v-model="value" placeholder="请选择" v-on="eventsParams">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+      :disabled="item.disabled"
+    >
+    </el-option>
+  </el-select>
+</template>
+
+<script>
+export default {
+  props: {
+    // component props
+    propsParams: {
+      type: Object,
+      default: () => ({}),
+    },
+    // component events
+    eventsParams: {
+      type: Object,
+      default: () => ({}),
+    },
+    // custom props
+    defaultValue: {
+      type: String,
+      default: '',
+    },
+    options: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      value: this.defaultValue,
+    };
+  },
+};
+</script>
+
+```
+
+```ts
+test('mount work', async ({ page, mount }) => {
+  const ct = await mount(SelectBase, {
+    props: {
+      // custom props
+      options: baseOptions,
+    },
+  });
+  const { openPopover } = useSelect(ct, page);
+
+  await openPopover();
+
+  // Visual comparisons
+  // allow 5% pixe ratio diff
+  await expect(page).toHaveScreenshot({ maxDiffPixelRatio: 0.5 });
+});
+```
+
+## 组件Props测试
+
+```ts
+test('single select work', async ({ page, mount }) => {
+  const ct = await mount(SelectBase, {
+    props: {
+      options: baseOptions,
+      defaultValue: baseOptions[0].value,
+    },
+  });
+  const { pickSelectOption, openPopover } = useSelect(ct, page);
+
+  await openPopover();
+  await pickSelectOption({ text: baseOptions[1].label });
+
+  await expect(ct.locator('.el-input input')).toHaveValue(baseOptions[1].label);
+});
+```
+
+## 组件Events测试
+
+```ts
+test('event work', async ({ page, mount }) => {
+  const messages: string[] = [];
+
+  const ct = await mount(SelectBase, {
+    props: {
+      propsParams: {
+        clearable: true,
+      },
+      eventsParams: {
+        change: () => messages.push('change-trigger'),
+        clear: () => messages.push('clear-trigger'),
+        'visible-change': () => messages.push('visible-change-trigger'),
+      },
+      options: baseOptions,
+    },
+  });
+  const { pickSelectOption, openPopover } = useSelect(ct, page);
+
+  await openPopover();
+  await pickSelectOption({ text: baseOptions[0].label });
+
+  await ct.locator('.el-input').hover();
+  await ct.locator('.el-icon-circle-close').click();
+
+  expect(messages).toContain('change-trigger');
+  expect(messages).toContain('clear-trigger');
+  expect(messages).toContain('visible-change-trigger');
+});
+```
+
+## 组件Slots测试
+
+```ts
+test('slots work', async ({ mount }) => {
+  const ct = await mount(Button, {
+    slots: {
+      default: 'click me',
+    },
+  });
+
+  await expect(ct).toContainText('click me');
+});
+
+test('jsx slots work', async ({ mount }) => {
+  const ct = await mount(<el-button>click me</el-button>);
+
+  await expect(ct).toContainText('click me');
+});
+```
+
+## 快捷键测试
+
+```ts
+test('keyboard operations', async ({ page, mount }) => {
+  const ct = await mount(SelectBase, {
+    props: {
+      options: baseOptions,
+      defaultValue: baseOptions[0].value,
+    },
+  });
+  const { openPopover } = useSelect(ct, page);
+
+  await openPopover();
+
+  await ct.locator('.el-input').press('ArrowDown');
+  await ct.locator('.el-input').press('ArrowDown');
+  await ct.locator('.el-input').press('Enter');
+
+  await expect(ct.locator('.el-input input')).toHaveValue(baseOptions[1].label);
+});
+```
 
 # Cypress组件测试案例
 
@@ -91,6 +317,219 @@ Cypress的测试代码与被测试的web应用会直接在同一个浏览器中�
 WebbSocket链接进行通信。同时在这里对于网络请求会进行代理控制，可以做到读取和更改网络请求等操作。
 
 在操作系统级别，Cypress通过NodeJs进程可以做到截图、录制视频、文件读写等操作。
+
+## 开始
+
+参考官方文档中的[Quick Start vue](https://docs.cypress.io/guides/component-testing/quickstart-vue)
+
+在下面的仓库也提供了通过Cypress搭建的组件测试框架，下面所有演示的完整代码都可以在里面找到
+
+- [Vue3 Cypress Components Testing](https://github.com/hangboss1761/front-end-testing-share/tree/master/code/cypress-base)
+
+## 组件引入
+
+```ts
+// cypress/support/component.ts 在Vue3引入全局组件，引入方式不友好，Vue3里面更推荐按需引入
+import { mount } from 'cypress/vue'
+import Button from '../../src/components/Button.vue'
+
+Cypress.Commands.add('mount', (component, options = {}) => {
+  // Setup options object
+  options.global = options.global || {}
+  options.global.components = options.global.components || {}
+
+  // Register global components
+  options.global.components['Button'] = Button
+
+  return mount(component, options)
+})
+
+// cypress/support/component.ts 在Vue2引入全局组件
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import { mount } from 'cypress/vue';
+
+Vue.use(ElementUI);
+
+Cypress.Commands.add('mount', mount);
+```
+
+## 模型封装
+
+```ts
+const selectModal = {
+  pickSelectOption: ({ text, nth }: { text?: string; nth?: number }) => {
+    if (text) {
+      cy.get('.el-select-dropdown:visible .el-select-dropdown__item').contains(text).click();
+    } else {
+      cy.get(`.el-select-dropdown:visible .el-select-dropdown__item::nth-child(${nth})`).click();
+    }
+  },
+  openPopover: () => {
+    // 等待popover动画执行完毕
+    cy.get('.el-input').click().wait(400);
+  },
+};
+```
+
+## 组件渲染测试
+
+```html
+<template>
+  <el-select v-bind="propsParams" v-model="value" placeholder="请选择" v-on="eventsParams">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+      :disabled="item.disabled"
+    >
+    </el-option>
+  </el-select>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { ElSelect, ElOption } from 'element-plus';
+
+interface OptionItem {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+const props = withDefaults(
+  defineProps<{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    propsParams?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    eventsParams?: Record<string, any>;
+    defaultValue?: string;
+    options: OptionItem[];
+  }>(),
+  {
+    propsParams: () => ({}),
+    eventsParams: () => ({}),
+    defaultValue: '',
+    options: () => [],
+  },
+);
+
+const value = ref(props.defaultValue);
+</script>
+
+```
+
+```ts
+it('mount work', () => {
+  cy.mount(SelectBase, {
+    props: {
+      options: baseOptions,
+    },
+  });
+
+  selectModal.openPopover();
+
+  /**
+   * 官方文档推荐的cypress-plugin-snapshots插件在cypress10.6.0使用时报错
+   * 相关issue见：https://github.com/meinaart/cypress-plugin-snapshots/issues/215
+   * 这里使用https://github.com/FRSOURCE/cypress-plugin-visual-regression-diff 来实现视觉对比
+   */
+  cy.matchImage();
+});
+```
+
+## 组件Props测试
+
+```ts
+it('single select work', () => {
+  cy.mount(SelectBase, {
+    props: {
+      options: baseOptions,
+      defaultValue: baseOptions[0].value,
+    },
+  });
+
+  selectModal.openPopover();
+  selectModal.pickSelectOption({ text: baseOptions[1].label });
+  cy.get('.el-input input').should('have.value', baseOptions[1].label);
+});
+```
+
+## 组件Events测试
+
+```ts
+it('event work', () => {
+  const messages: string[] = [];
+
+  cy.mount(SelectBase, {
+    props: {
+      propsParams: {
+        clearable: true,
+      },
+      eventsParams: {
+        change: () => messages.push('change-trigger'),
+        clear: () => messages.push('clear-trigger'),
+        'visible-change': () => messages.push('visible-change-trigger'),
+      },
+      options: baseOptions,
+    },
+  });
+
+  selectModal.openPopover();
+  selectModal.pickSelectOption({ text: baseOptions[0].label });
+
+  cy.get('.el-input').click();
+  cy.get('.el-select__icon:visible').click();
+
+  cy.wrap(messages)
+    .should('include', 'clear-trigger')
+    .should('include', 'change-trigger')
+    .should('include', 'visible-change-trigger');
+});
+```
+
+## 组件Slots测试
+
+```ts
+it('slot work', () => {
+  cy.mount(ElButton, {
+    slots: {
+      default: () => <span>click me</span>,
+    },
+  });
+
+  cy.get('button').should('have.text', 'click me');
+});
+
+it('jsx slot work', () => {
+  cy.mount(() => <ElButton>click me</ElButton>);
+
+  cy.get('button').should('have.text', 'click me');
+});
+```
+
+## 快捷键测试
+
+```ts
+it('keyboard operations work', () => {
+  cy.mount(SelectBase, {
+    props: {
+      options: baseOptions,
+      defaultValue: baseOptions[0].value,
+    },
+  });
+
+  selectModal.openPopover();
+
+  cy.get('.el-input').type('{downArrow}');
+  cy.get('.el-input').type('{downArrow}');
+  cy.get('.el-input').type('{enter}');
+
+  cy.get('.el-input input').should('have.value', baseOptions[1].label);
+});
+```
 
 # 实施自动化测试的策略
 

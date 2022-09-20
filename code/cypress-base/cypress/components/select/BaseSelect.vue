@@ -1,5 +1,5 @@
 <template>
-  <el-select v-bind="propsParams" v-model="value" placeholder="请选择">
+  <el-select v-bind="propsParams" v-model="value" placeholder="请选择" v-on="eventsParams">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -26,11 +26,13 @@ const props = withDefaults(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     propsParams?: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    eventsParams?: Record<string, any>;
     defaultValue?: string;
     options: OptionItem[];
   }>(),
   {
     propsParams: () => ({}),
+    eventsParams: () => ({}),
     defaultValue: '',
     options: () => [],
   },
