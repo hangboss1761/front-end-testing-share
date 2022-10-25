@@ -28,6 +28,6 @@ module.exports = defineConfig({
   ],
   rules: {
     'prettier/prettier': ['error'],
-    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-var-requires': 'on',
   },
 });
