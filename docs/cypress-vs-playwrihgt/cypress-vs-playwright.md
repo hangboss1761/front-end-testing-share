@@ -2,11 +2,9 @@
 
 本文将对前端自动化测试领域中最热门的两个测试框架Playwright与Cypress进行详细对比，通过代码片段与实际项目来帮大家直观的感受两个框架在各方面的基本情况。
 
-如果你对于自动化测试还非常陌生，可以先在我们的另一片文章中了解一些背景知识，同时关于两个框架的背景、架构设计也在文中介绍了，这里我们不再重复介绍。
+如果你对于自动化测试还非常陌生，可以先在我们的另一片文章[基于浏览器渲染的前端组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)中了解一些背景知识，同时关于两个框架的背景、架构设计也在文中介绍了，这里我们不再重复介绍。
 
-// TODO: 补充组件测试的文章链接
-
-所有的代码可以在<https://github.com/hangboss1761/front-end-testing-share>查看，框架搭建可以直接参考它，后面会直接演示具体代码。推荐将项目clone到本地运行，有演示代码不好理解的话，直接跑对应的代码，在浏览器中观察它是在做什么。
+所有的代码可以在[github](https://github.com/hangboss1761/front-end-testing-share)查看，框架搭建可以直接参考它，后面会直接演示具体代码。推荐将项目clone到本地运行，有演示代码不好理解的话，直接跑对应的代码，在浏览器中观察它是在做什么。
 
 # 基础功能对比
 
@@ -155,6 +153,7 @@ describe('authentication work', () => {
 ```
 
 角色切换
+
 - cypress不支持多tab同时运行，所有的切换都会在一个tab下进行
 
 ```ts
@@ -424,6 +423,7 @@ test('drag work', async ({ page }) => {
 ### Cypress
 
 官网上暂时没有读到上传相关的文档说明，不过可以通过`cypress-file-uploadl`这个库来实现上传，如果你要测试的上传功能实现时`<input type="file />`不存在或者在后期动态创建，那么可能你没有办法通过它来实现上传文件了
+
 ```ts
 // code/cypress-base/cypress/e2e/downloadAndUpload/downAndUp.spec.cy.ts
 import { userInfo } from '../../fixtures/assets/data/index';
@@ -457,6 +457,7 @@ it('upload work', () => {
 ### Playwright
 
 提供`setInputFiles`、`waitForEvent('filechooser')`，可以灵活的选择上传方式
+
 ```ts
 // code/playwright-base/tests/modules/downloadAndUpload/downAndUp.spec.ts
 import { test, expect } from '@playwright/test';
@@ -611,6 +612,7 @@ test('multiple tabs works', async ({ page }) => {
 ### Cypress
 
 支持拦截请求前后，发起请求
+
 ```ts
 cy.intercept({
   method: 'POST',
@@ -680,22 +682,25 @@ await expect(page.locator('.status')).toHaveText('Submitted');
 
 # 报告与调试
 
+本节内容建议clone下github中的代码来跑一下，已获得更真切的体验。
+
 ## Cypress
 
-- 官方不提供报告，通过社区提供的插件来
+- 自身提供的报告格式非常有限，不过社区提供的插件包含了各式各样的报告。（[HTML报告参考](https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct/)）
 - 通过查看video与页面快照进行调试
-- 在`cypress open` mode中调试，可以断点、单步运行、在控制台查看日志
+- 在本地使用`cypress open` mode调试，可以断点、单步运行、在控制台查看日志
 ![cypress-open-debug](img/cypress-open-debug.jpg)
 - 对于运行在CI中的用例调试，如果没有dashboard服务，只能通过观察视频、与页面快照进行调试，或者在本地复现问题问题本地调试
 ![dashboard-debug](img/dashboard-debug.jpg)
 
 ## Playwright
 
+- 内置多种格式的报告支持，HTML报告的功能有非常好的使用体验。（[HTML报告参考](https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct/)）
 - 通过查看video与[trace](https://playwright.dev/docs/trace-viewer)进行调试，在trace中可以看到action的日志、快照、网络请求、浏览器控制台信息，对于调试帮助非常大，特别是定位运行在CI中用例的问题。
 
 - 在VS Code中使用[Playwright Test for VSCode](https://playwright.dev/docs/getting-started-vscode)进行调试，与在VS Code中调试Web应用的体验基本一致
 ![vscode-debug](img/vscode-debug.jpg)
-- 对于运行在CI中的用例调试，可以通过video与trace进行调试
+- 对于运行在CI中的用例调试，可以通过HTML报告以及其中内嵌的video与trace进行调试
 
 # 语法对比
 
@@ -741,7 +746,6 @@ Cypress历史更悠久，对于使用过程中遇到的问题，可能你在网�
 
 Playwright作为2021年新推出的测试框架，在中文资料的丰富度上远不如Cypress，遇到问题时更多的需要你去查阅官方issue、通过英文关键字在stackoverflow/google上搜索问题，也可以去官方仓库提issue，官方会在48h内进行回复。但是，Playwright自身的文档做的非常出色，通过仔细阅读官方文档可能你的很多问题就能得到解决。
 
-
 # 插件
 
 Playwright暂时没有提供对应的插件支持，但是你需要的东西可能在官方都得到了较好的支持，不再需要额外的插件支持。
@@ -759,11 +763,12 @@ Cypress在社区中有大量的插件，免费、收费的都有，一些Cypress
 - Cypress更推荐[在本地环境中运行你要测试的程序](https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Step-1-Start-your-server)，虽然您当然可以测试已经部署的应用程序，但这并不是 Cypress 的真正优势。
 - playwright在测试生产环境的应用时，有明显的速度优势。
 
-**并发执行提高速度**
+## 并发执行提高速度
 
 playwright可以在单个文件、多个文件、同一个机器、不同机器、不同浏览器都可以做到并发执行，官方提供简单的配置让你灵活的选择你想要的并发模式
 
 单个机器上的并发执行
+
 ```ts
 // playwright.config.ts
 import type { PlaywrightTestConfig } from '@playwright/test';
@@ -776,6 +781,7 @@ export default config;
 ```
 
 多个机器上的并发执行
+
 ```bash
 # 机器1
 npx playwright test --shard=1/3
@@ -786,7 +792,6 @@ npx playwright test --shard=3/3
 ```
 
 Cypres官方并不推荐你在一台机器上去并发执行用例，这，表示这可能会耗费过多的资源需要你的机器有比较可靠的性能([原文在这](https://docs.cypress.io/guides/guides/parallelization#Overview))
-
 
 在下面的持续集成部分，我们将演示如何在持续集成中做到多机器并发执行
 
@@ -1071,22 +1076,11 @@ jobs:
           retention-days: 30
 ```
 
-
-
-## 测试报告
-
 ## 组件测试
 
-### playwright组件测试
-#### 组件测试的初始化
-在`playwright/index.ts`中可以进行一些初始化操作，比如全局注册组件、引入配置样式等
-```ts
-// vue2/3 setup demo
-```
+参考文章[基于浏览器渲染的前端组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)。
 
-#### 组件测试
-
-## 其他问题
+## 其他
 
 ### Cypress中`cy.visit()`方法的缺陷
 
@@ -1099,33 +1093,14 @@ jobs:
 ---
 以下是个人观点，仅供参考
 
-截止到目前的时间2022-09-14，playwright最新发布的版本为1.26.0。
+截止到目前的时间2022-11-01，playwright最新发布的版本为1.27.1。
 
 在2022.5.13发布的1.22.0版本中，playwright提供了Component Testing的支持，截止到该版本，playwright对比cypress在功能上基本就没有大的差距了,整体的功能与易用性的优势体现明显。
 
 从官方的的[Releases](https://github.com/microsoft/playwright/releases?page=1)记录中可以看到，Playwright团队保持着每个月一个次版本发布,2-4次左右的补丁版本发布，issue基本上在48h内会进行回复，近半年来除了Component Testing没有其他比较重要的功能发布，更多的是易用性改进与bug修复。项目已经处于相对稳定，且维护积极的状态。
 
-在我们内部项目的实践中，受益于Playwright自身的强大的功能，在技术方面我们基本没有出现过多的难以解决的障碍，官方提供的VS Code插件以及可视报告中的视频回放与[Trace Viewer](https://playwright.dev/docs/trace-viewer-intro)让我们在调试并分析本地与CI中失败用例的成本都降到最低，让我们有更多的时间去解决端到端自动化中的其他问题与障碍。
+> 在查阅Playwright issues时，我们还发现了一位Cypress的中度使用用户，使用Cypress构建了500+复杂、企业级的测试用例。表示经过调研，如果在后续的新项目中，他更乐意使用Playwright，并且还开发了一个Cypress插件，能够在Cypress中使用Playwright，可以在[这个issue中看到相关讨论](https://github.com/microsoft/playwright/issues/17056)
+
+在我们内部项目的实践中，充分体会到了Playwright强大的功能以及易用的API，官方提供的VS Code插件以及可视报告中的视频回放与[Trace Viewer](https://playwright.dev/docs/trace-viewer-intro)让我们在调试并分析本地与CI中失败用例的成本都降到最低，让我们有更多的时间去解决端到端自动化中的其他问题与障碍。
 
 从对比与实践来看，当前阶段选择Playwright作为团队的测试框架已经不在属于冒险的尝试，而是非常正确的选择，将会为团队的端到端测试与组件测试的顺利开展做出非常重要的铺垫作用。
-
-1.20.0 3-15
-1.20.1 3-24
-1.20.2 4-2
-1.21.0 4-12
-1.21.1 4-19
-1.22.0 5-13
-1.22.1 5-17
-1.22.2 5.21
-1.23.0 6.28
-1.23.1 7-1
-1.23.2 7-8
-1.23.3 7-13
-1.23.4 7-16
-1.24.0 7-22
-1.24.1 7-22
-1.24.2 7-30
-1.25.0 8-11
-1.25.1 8-23
-1.25.2 9-7
-
