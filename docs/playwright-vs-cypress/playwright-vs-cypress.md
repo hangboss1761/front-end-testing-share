@@ -330,7 +330,7 @@ test('authentication switch in test', async ({ browser }) => {
 
 事件触发是模拟的，意味着`cy.click` `cy.type`等都是通过js实现的，并且不支持Hover事件
 
-通过社区提供的[cypress-real-events](https://github.com/dmtrKovalenko/cypress-real-events)（使用CDP协议）可以才能实现出真实事件操作
+通过社区提供的[cypress-real-events](https://github.com/dmtrKovalenko/cypress-real-events)（使用CDP协议）可以实现出真实事件操作
 
 ```ts
 // code/cypress-base/cypress/e2e/hover/hover.spec.cy.ts
@@ -678,11 +678,11 @@ expect(success).toBeTruthy();
 await expect(page.locator('.status')).toHaveText('Submitted');
 ```
 
-[automatically retry](https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Assertions)与[re-testing](https://playwright.dev/docs/test-assertions)类似，已re-testing为例，Playwright会re-testing Node直到它内部存在文本”Submitted“，在这个过程中它会一遍又一遍的去抓取Node并做检查，存在一个超时时间。
+[automatically retry](https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Assertions)与[re-testing](https://playwright.dev/docs/test-assertions)类似，以re-testing为例，Playwright会re-testing Node直到它内部存在文本”Submitted“，在这个过程中它会一遍又一遍的去抓取Node并做检查，存在一个超时时间。
 
 # 报告与调试
 
-本节内容建议clone下github中的代码来跑一下，已获得更真切的体验。
+本节内容建议clone下github中的代码来跑一下，以获得更真切的体验。
 
 ## Cypress
 
@@ -734,7 +734,7 @@ Playwright开源且完全免费。
 
 Cypress开源免费，但是DashBoard服务免费版有功能与使用数量上的限制，且无法私有化部署。
 
-![收费](./img/cypress%E6%94%B6%E8%B4%B9.png)
+![收费](./img/cypress收费.png)
 
 ## 社区生态
 
