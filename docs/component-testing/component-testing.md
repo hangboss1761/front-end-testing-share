@@ -60,7 +60,7 @@ Playwright是2020年微软推出的一个专门用来做Web应用的测试与自
 
 ## playwright架构图
 
-![playwright架构图](./img/playwright%E6%9E%B6%E6%9E%84%E5%9B%BE.png)
+![playwright架构图](./img/playwright架构图.png)
 
 @playwright/test里面实现了测试用例的运行、断言、测试报告生成等功能
 
@@ -541,4 +541,4 @@ it('keyboard operations work', () => {
 
 在前端自动化测试中，组件测试是我们认为最具有性价比的测试类型，在对组件进行测试时对于其他服务基本没有依赖，可以独立进行测试，同时各种基础组件、业务组件也广泛的使用在我们的系统中的各个地方，通过自动化测试保障好它们的质量对于系统整体的质量提升有这明显的帮助。
 
-组件测试方面两个测试框架功能层面的差距基本没有，如果你仅仅只考虑组件测试，那么这两个框架都是非常推荐的。如果你同样关注端到端测试以及两个框架更深层次的对比，可以阅读这篇文章 [这里](./)
+组件测试方面两个测试框架功能层面的差距基本没有，如果你仅仅只考虑组件测试，那么这两个框架都是非常推荐的。如果你同样关注端到端测试以及两个框架更深层次的对比，可以阅读文章[Playwright VS Cypress](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/playwright-vs-cypress/playwright-vs-cypress.md)。

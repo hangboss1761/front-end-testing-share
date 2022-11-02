@@ -2,7 +2,7 @@
 
 本文将对前端自动化测试领域中最热门的两个测试框架Playwright与Cypress进行详细对比，通过代码片段与实际项目来帮大家直观的感受两个框架在各方面的基本情况。
 
-如果你对于自动化测试还非常陌生，可以先在我们的另一片文章[基于浏览器渲染的前端组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)中了解一些背景知识，同时关于两个框架的背景、架构设计也在文中介绍了，这里我们不再重复介绍。
+如果你对于自动化测试还非常陌生，可以先在我们的另一片文章[基于浏览器渲染的组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)中了解一些背景知识，同时关于两个框架的背景、架构设计也在文中介绍了，这里我们不再重复介绍。
 
 所有的代码可以在[github](https://github.com/hangboss1761/front-end-testing-share)查看，框架搭建可以直接参考它，后面会直接演示具体代码。推荐将项目clone到本地运行，有演示代码不好理解的话，直接跑对应的代码，在浏览器中观察它是在做什么。
 
