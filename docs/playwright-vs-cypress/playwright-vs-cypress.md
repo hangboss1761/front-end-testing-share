@@ -830,9 +830,10 @@ Cypres官方并不推荐你在一台机器上去并发执行用例，这，表�
 完成配置后点击Visit site，在打开的页面中将会出现文案“root page”
 
 这里提供一些预览：
-[一个成功运行的workflow](https://github.com/hangboss1761/front-end-testing-share/actions/runs/3075919449)
-[Github Page中的Cypress测试报告](https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct/)
-[Github Page中的Playwright测试报告](https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct/)
+
+- [一个成功运行的workflow](https://github.com/hangboss1761/front-end-testing-share/actions/runs/3075919449)
+- [Github Page中的Cypress测试报告](https://hangboss1761.github.io/front-end-testing-share/static-pages/cypress-report-ct/)
+- [Github Page中的Playwright测试报告](https://hangboss1761.github.io/front-end-testing-share/static-pages/playwright-report-ct/)
 
 ![workflow](img/workflow.png)
 
@@ -1078,7 +1079,7 @@ jobs:
 
 ## 组件测试
 
-参考文章[基于浏览器渲染的前端组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)。
+参考文章[基于浏览器渲染的组件测试](https://github.com/hangboss1761/front-end-testing-share/blob/master/docs/component-testing/component-testing.md)。
 
 ## 其他
 
