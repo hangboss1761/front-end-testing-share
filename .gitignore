@@ -19,3 +19,7 @@ dist/
 **/cypress/reports/
 **/cypress/downloads/
 **/runner-results/
+
+**/.nyc_output/
+**/coverage/
+

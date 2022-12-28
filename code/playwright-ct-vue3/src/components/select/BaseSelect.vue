@@ -13,7 +13,9 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { sayHello } from './index'
 
+sayHello()
 interface OptionItem {
   value: string;
   label: string;

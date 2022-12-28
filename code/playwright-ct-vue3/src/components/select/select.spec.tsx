@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/experimental-ct-vue';
+import { test, expect } from '../../baseFixtures';
 import { Page, Locator } from '@playwright/test';
 import SelectBase from './BaseSelect.vue';
 import RemoteFilterSelect from './RemoteFilterSelect.vue';
@@ -81,7 +81,7 @@ test('custom dropdown class', async ({ page, mount }) => {
   await expect(page.locator('.ct-class.el-select-dropdown')).toBeVisible();
 });
 
-test('default value work', async ({ mount }) => {
+test('default value work', async ({ page, mount }) => {
   const ct = await mount(SelectBase, {
     props: {
       options: baseOptions,
@@ -90,6 +90,7 @@ test('default value work', async ({ mount }) => {
   });
 
   await expect(ct.locator('.el-input input')).toHaveValue(baseOptions[0].label);
+  // await page.pause();
 });
 
 test('single select work', async ({ page, mount }) => {
